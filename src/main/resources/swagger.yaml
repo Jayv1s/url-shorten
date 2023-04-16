@@ -1,40 +1,32 @@
 
-swagger: "2.0"
+openapi: 3.0.3
 info:
   title: URL Shorten
   description: API to short given URLS;
   version: "1.0.0"
-host: localhost:8080
-basePath: /api/v1
-schemes:
-  - http
-consumes:
-  - application/json
-produces:
-  - application/json
+servers:
+  - url: localhost:8080
 paths:
   /shorten:
     post:
       summary: Shorten the given URL
       description: Create an shorten URL based on the given URL
-      parameters:
-        - in: body
-          name: url
-          description: URL to be shortened
-          required: true
-          schema:
-            type: object
-            properties:
-              url:
-                type: string
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UrlShortenReqBody"
       responses:
         200:
           description: URL shortened with success
-          schema:
-            type: object
-            properties:
-              shortenedUrl:
-                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shortenedUrl:
+                    type: string
         400:
           description: Bad Parameter
         500:
@@ -57,3 +49,11 @@ paths:
           description: Shortened URL not found
         500:
           description: Server Error
+
+components:
+  schemas:
+    UrlShortenReqBody:
+      type: object
+      properties:
+        url:
+          type: string
