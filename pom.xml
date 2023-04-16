@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 	</properties>
 	<dependencies>
+		<!-- Spring dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -31,66 +32,77 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Swagger Codegen dependencies -->
+
+		<!-- OpenAPI/Swagger dependencies -->
 		<dependency>
-			<groupId>io.swagger</groupId>
-			<artifactId>swagger-codegen</artifactId>
-			<version>2.4.30</version>
+			<groupId>io.swagger.parser.v3</groupId>
+			<artifactId>swagger-parser-v3</artifactId>
+			<version>2.0.22</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
-			<version>1.6.10</version>
+			<version>1.6.9</version>
 		</dependency>
-		<!-- OkHttp dependency -->
+
+		<!-- Jackson dependencies -->
 		<dependency>
-			<groupId>com.squareup.okhttp</groupId>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jdk8</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+			<version>2.13.0</version>
+		</dependency>
+
+		<!-- Okhttp3 dependencies -->
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>2.7.5</version>
+			<version>4.9.3</version>
 		</dependency>
 		<dependency>
-			<groupId>com.squareup.okhttp</groupId>
-			<artifactId>okhttp-urlconnection</artifactId>
-			<version>2.7.5</version>
-		</dependency>
-		<dependency>
-			<groupId>com.squareup.okhttp</groupId>
+			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>logging-interceptor</artifactId>
-			<version>2.7.5</version>
+			<version>4.9.3</version>
 		</dependency>
-		<!-- commons dependency -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.10</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.32</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.32</version>
-		</dependency>
+
+		<!-- GSON dependencies -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>2.8.9</version>
+			<version>2.8.8</version>
 		</dependency>
-		<!-- Threeten BP -->
-		<dependency>
-			<groupId>org.threeten</groupId>
-			<artifactId>threetenbp</artifactId>
-			<version>1.5.0</version>
-		</dependency>
-
-		<!-- Gsonfire -->
 		<dependency>
 			<groupId>io.gsonfire</groupId>
 			<artifactId>gson-fire</artifactId>
 			<version>1.8.4</version>
+		</dependency>
+
+		<!-- Java Dependency -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
+
+		<!-- Support Dependencies -->
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.10</version>
 		</dependency>
 	</dependencies>
 
@@ -118,27 +130,32 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>io.swagger</groupId>
-				<artifactId>swagger-codegen-maven-plugin</artifactId>
-				<version>2.4.30</version>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>5.2.1</version>
 				<executions>
 					<execution>
-						<id>generate-sources</id>
-						<phase>generate-sources</phase>
+						<id>generate-client</id>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<!-- Swagger file location -->
 							<inputSpec>src/main/resources/swagger.yaml</inputSpec>
-							<!-- Generated code output directory -->
-							<output>${project.build.directory}/generated-sources/swagger</output>
-							<!-- Code generation language (Java in this case) -->
-							<language>java</language>
-							<!-- Additional configuration options -->
+							<generatorName>java</generatorName>
+							<output>${project.build.directory}/generated-sources/openapi</output>
+							<generateApis>true</generateApis>
+							<generateModels>true</generateModels>
+							<generateApiTests>false</generateApiTests>
+							<generateModelTests>false</generateModelTests>
 							<configOptions>
-								<sourceFolder>src/main/java</sourceFolder>
+								<sourceFolder>com/personal/project/api</sourceFolder>
+								<dateLibrary>java8</dateLibrary>
+								<interfaceOnly>true</interfaceOnly>
 							</configOptions>
+							<apiPackage>com.personal.project.api</apiPackage>
+							<modelPackage>com.personal.project.model</modelPackage>
+							<generateSupportingFiles>true</generateSupportingFiles>
+							<skipValidateSpec>true</skipValidateSpec>
 						</configuration>
 					</execution>
 				</executions>
@@ -147,12 +164,16 @@
 	</build>
 	<repositories>
 		<repository>
-			<id>central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
-		</repository>
-		<repository>
 			<id>swagger-repo</id>
 			<url>https://oss.sonatype.org/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>jcenter</id>
+			<url>https://jcenter.bintray.com</url>
+		</repository>
+		<repository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2</url>
 		</repository>
 	</repositories>
 </project>
